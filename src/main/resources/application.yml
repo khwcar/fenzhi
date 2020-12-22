@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: dev
+mybatis:
+  #寻找mapper文件
+  mapper-locations: classpath*:mapper/**/*.xml
+  #配置实体类的位置，可以使用别名访问实体类
+  type-aliases-package: com.khw.studnet_grade.entity
+
+logging:
+  level:
+    org:
+      springframework: info

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khw.studnet_grade.mapper.TesMapper" >
+<!--    <resultMap id="grade" type="com.khw.studnet_grade.entity.StudentMark">-->
+<!--        <id column="sno" property="sno" javaType="INTEGER"/>-->
+<!--        <result column="sname" property="sname" javaType="VARCHAR"/>-->
+<!--        <result column="cname" property="cname" javaType="VARCHAR"/>-->
+<!--        <result column="score" property="score" javaType="VARCHAR"/>-->
+<!--    </resultMap>-->
+
+    <select id="SelectByAllStudentCourse" parameterType="java.util.Map" resultType="com.khw.studnet_grade.entity.StudentMark">
+        SELECT student.sno sno,student.sname sname,course.cname cname,score.score score
+        FROM student
+        LEFT JOIN score
+        ON student.sno = score.sno
+        LEFT JOIN course
+        on course.cno = score.cno
+        WHERE score between 60 and 100
+        and student.sno in
+        <foreach collection="customerIds"  item="item" separator="," open="(" close=")">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="selectBysnoBycno" parameterType="java.util.Map" resultType="com.khw.studnet_grade.entity.StudentMark">
+        SELECT student.sno,student.sname,course.cname,score.score from score
+        join student
+        on student.sno = score.sno
+        JOIN course
+        on course.cno = score.cno
+        <where>
+            <if test="sno!=null and sno!=''">
+                score.sno = #{sno}
+            </if>
+            and score.cno in
+            <if test="cno!=null and cno.size()!=0">
+                <foreach collection="cno"  separator="," index="index" open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
